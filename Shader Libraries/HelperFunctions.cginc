@@ -27,8 +27,8 @@ float Luminosity( float4 color )
 float3 RGBtoHSV(float3 c)
 {
     float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-    float4 p = mix(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
-    float4 q = mix(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+    float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+    float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
 
     float d = q.x - min(q.w, q.y);
     float e = 1.0e-10;
@@ -38,8 +38,8 @@ float3 RGBtoHSV(float3 c)
 float3 HSVtoRGB(float3 c)
 {
     float4 K    = float4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    float3 p    = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return      c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+    float3 p    = abs(frac(c.xxx + K.xyz) * 6.0 - K.www);
+    return      c.z * lerp(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
 
@@ -63,5 +63,5 @@ float3 Unpack3PNFromFP32(float fFloatFromFP32)
     a = ((uInputFloat) & 0xFFFF) / 65535.0f;
     b = ((uInputFloat >> 16) & 0xFF) / 255.0f;
     c = (((uInputFloat >> 24) & 0xFF) - 1.0f) / 253.0f;
-    return new float3(a, b, c);
+    return float3(a, b, c);
 } 
